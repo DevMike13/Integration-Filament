@@ -165,6 +165,6 @@
         })
     </script>
     <script async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAj28GImgTfTwGPbQBengBXN7dpqvukNJ4&loading=async&libraries=visualization&callback=myMap">
+        src="https://maps.googleapis.com/maps/api/js?key=API_KEY&loading=async&libraries=visualization&callback=myMap">
     </script>
 </div>
