@@ -16,6 +16,8 @@ return new class extends Migration
             $table->decimal('latitude', 10, 7);
             $table->decimal('longitude', 10, 7);
             $table->integer('weight')->nullable();
+            $table->string('full_address');
+            $table->string('hazard_type');
             $table->timestamps();
         });
     }

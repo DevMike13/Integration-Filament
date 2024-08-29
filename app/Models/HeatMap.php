@@ -9,5 +9,5 @@ class HeatMap extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['latitude', 'longitude', 'weight'];
+    protected $fillable = ['latitude', 'longitude', 'weight', 'full_address', 'hazard_type'];
 }

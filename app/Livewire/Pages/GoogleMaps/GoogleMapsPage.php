@@ -3,6 +3,8 @@
 namespace App\Livewire\Pages\GoogleMaps;
 
 use App\Models\HeatMap;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class GoogleMapsPage extends Component
@@ -10,38 +12,58 @@ class GoogleMapsPage extends Component
     public $heatmapData = [];
     public $lat;
     public $lng;
+    public $fullAddress;
+    public $hazardType;
+    
+    #[Url]
+    public $filters = [];
+
+    protected $listeners = ['updatedFilter'];
 
     public function mount()
     {
-        // $this->heatmapData = [
-        //     ['lat' => 13.96309989449683, 'lng' => 121.52555394837445, 'weight' => 3],
-        //     ['lat' => 13.963740220120123, 'lng' => 121.52712572285718],
-        //     ['lat' => 13.964401367473776, 'lng' => 121.52934659192151, 'weight' => 2],
-        // ];
         $this->fetchHeatmapData();
     }
 
+    // public function fetchSelectedHeatMapDetails($id){
+    //     $this->heatmapDetailsData = HeatMap::select('latitude', 'longitude', 'weight', 'full_address')->where('id', $id)->first()->toArray();
+    //     $this->dispatch('heatmapDetailsUpdated', $this->heatmapDetailsData);
+    // }
+    
+    public function updatedFilter($value)
+    {
+        $this->filters;
+        $this->fetchHeatmapData();
+        
+    }
+    public function reload(){
+        $this->js('window.location.reload()'); 
+    }
     public function fetchHeatmapData()
     {
-        $this->heatmapData = HeatMap::select('latitude', 'longitude', 'weight')->get()->toArray();
-    }
+        $query = HeatMap::select('id','latitude', 'longitude', 'weight', 'full_address', 'hazard_type');
 
-    public function selectHeatPoint($latitude, $longitude)
-    { 
+        if (!empty($this->filters)) {
+            $query->whereIn('hazard_type', $this->filters);
+        }
+
+        $this->heatmapData = $query->get()->toArray();
         
-        $this->lat = $latitude;
-        $this->lng = $longitude;
-        dd($latitude);
-       
     }
 
-    public function addPoint()
+    public function addHeatMap()
     {
-        if($this->lat && $this->lng){
+        $this->validate([ 
+            'hazardType' => 'required',
+        ]);
+
+        if($this->lat && $this->lng && $this->fullAddress){
             HeatMap::create([
                 'latitude' => $this->lat,
                 'longitude' => $this->lng,
                 'weight' => 1,
+                'full_address' => $this->fullAddress,
+                'hazard_type' => $this->hazardType
             ]);
         }
         $this->dispatch('reload');
